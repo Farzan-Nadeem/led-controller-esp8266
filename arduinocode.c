@@ -17,7 +17,6 @@ int brightness = 255;
 int rBright = 0;
 int gBright = 0;
 int bBright = 0;
-int fadeSpeed = 10;
 
 // function prototypes for HTTP handlers
 void handleRoot();
@@ -192,6 +191,11 @@ void bright_down() {
   server.send(200, "text/plain", "ok");
 }
 
+
+// For this, we'll have to see if the other events can interrupt this
+// If they can then this can be implemented
+// Otherwise, this is a no go
+// There won't be any way break out from the mode function once it starts running
 void mode() {
   if (server.arg("mode") == "fade") {
     Serial.println("Going to start the fadeee");
@@ -218,4 +222,35 @@ void color() {
 
 void handleNotFound() {
   server.send(404, "text/plain", "404: Not found"); // Send HTTP status 404 (Not Found) when there's no handler for the URI in the request
+}
+
+
+// Mode functions 
+
+// Fade 
+void fade() { 
+    int fadeSpeed = 40;
+    int fadeDiff = 5; 
+
+    // Update with breaker variable
+    while(true) {
+
+        // Would also check some breaker variable each time within these while blocks
+        while(rBright > 0 && rBright < 255) { 
+            rBright += fadeDiff;
+            analogWrite(RED_LED, rBright); 
+        }
+
+        while(gBright > 0 && gBright < 255) {
+            gBright += fadeDiff;
+            analogWrite(GREEN_LED, gBright); 
+        }
+
+        while(bBright > 0 && bBright < 255) { 
+            bBright += fadeDiff; 
+            analogWrite(BLUE_LED, bBright); 
+        }
+
+        fadeDiff = -fadeDiff;
+    }
 }
