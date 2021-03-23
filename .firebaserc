@@ -1,0 +1,5 @@
+{
+  "projects": {
+    "default": "led-controller-esp8266"
+  }
+}
