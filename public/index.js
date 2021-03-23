@@ -1,30 +1,46 @@
 // Initialization function
 // This will set all the saved colors if there are any
 var savedColors = ""
+var savedColorsKey = "savedColors"
 var savedColorsNum = 0
 var savedContainer = null;
 
+var ip = ""
+var ipKey = "lanIP"
+
 window.onload = init()  
 
-function init() { 
-    setTimeout(function() { 
-        var cookies = document.cookie;
-
+async function init() { 
+    savedContainer = document.getElementById("savedColorsContainer")
+    while(savedContainer == null) { 
         savedContainer = document.getElementById("savedColorsContainer")
-        if(cookies.length < 1 ) return 
+        await sleep(50)
+    }
 
-        savedColors = cookies.split("=")[1]
+    
+    ip = getCookie(ipKey)
+    document.getElementById("ip").value = ip;
+    
+    savedColors = getCookie(savedColorsKey) 
+    if(savedColors.length < 1 ) return
+    
+    savedColorsArray = savedColors.split(",")
+    savedColorsNum = savedColorsArray.length;  
+    savedColorsArray.forEach(color => { 
+        createSavedColorButton(color)
+    }) 
+}
 
-        savedColorsArray = savedColors.split(",")
-        savedColorsNum = savedColorsArray.length;
+// Saves the ip to the local variable and in the cookies
+function updateIP(e) { 
+    ip = e
 
-        console.log(savedContainer) 
+    var d = new Date();
+    d.setTime(d.getTime() + (10*365*24*60*60*1000));
+    var expires = "expires="+ d.toUTCString(); 
 
-        savedColorsArray.forEach(color => { 
-            createSavedColorButton(color)
-        })
-        
-    }, 100)
+    // Append to the custom color json and then set the cookie again to update it 
+    document.cookie = ipKey+"="+ip+";"+expires
 }
 
 // We're going to be using a single click handler for the RGB up/down buttons
@@ -34,8 +50,7 @@ function init() {
 function hue_change(e) { 
     // Send this to controller
 
-} 
-
+}
 
 // This handler is for changing the brightness
 // Logically it is the same as the above
@@ -46,7 +61,6 @@ function bright_change(e) {
 
 }
 
-
 // This is to tell the ESP8266 to start displaying a different mode
 // The actual code for the different modes is stored on the controller
 // Here, we send the mode that we want to start on the controller as a "parameter"
@@ -55,7 +69,6 @@ function mode(e) {
     // Send this to controller
 
 }
-
 
 // Going to have an input handler function that will update the controller
 // This will be intermittent until I figure out the rate that I can send data to the controller
@@ -86,7 +99,6 @@ function custom_color_picker_change(hex) {
     // Send this to controller
 }
 
-
 // This will be the function that saves the value of the custom color that was just made to the browser cookies
 function custom_color_save() { 
     var value = document.getElementById("colorPicker").value 
@@ -102,12 +114,11 @@ function custom_color_save() {
     var expires = "expires="+ d.toUTCString(); 
 
     // Append to the custom color json and then set the cookie again to update it 
-    document.cookie = "savedColors="+savedColors+";"+expires
+    document.cookie = savedColorsKey+"="+savedColors+";"+expires
 
     // Add the color to the ui 
     createSavedColorButton(value)
 }
-
 
 // Opposite of above, clears everything
 function clearSavedColors(e) { 
@@ -118,12 +129,11 @@ function clearSavedColors(e) {
         var expires = "expires="+ d.toUTCString(); 
     
         // Append to the custom color json and then set the cookie again to update it 
-        document.cookie = "savedColors="+savedColors+";"+expires
+        document.cookie = savedColorsKey+"="+savedColors+";"+expires
     
         savedContainer.innerHTML = ""
     }
 }
-
 
 // This will send a custom color to the controller to be displayed
 // This color will be sent as the "R", "G", and "B" parameter
@@ -134,7 +144,6 @@ function custom_color(e) {
     // Send this to controller
 
 }
-
 
 // The color picker sends back the value as a hex string 
 // We want this as a RGB value 
@@ -149,9 +158,28 @@ function hexToRgb(hex) {
     } : null;
 }
 
-
 function createSavedColorButton(color) { 
     var classes = "btn-floating btn-large waves-effect waves-light pressable"
     var tag = `<button value="${color}" onclick="custom_color(this.value)" style="background:${color}" class="${classes}"></button>`
     savedContainer.innerHTML += tag
+}
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function getCookie(cname) {
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
 }

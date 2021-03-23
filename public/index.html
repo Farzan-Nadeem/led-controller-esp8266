@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>LED Remote Control</title>
 
-
     <script src="index.js"></script>
     <link rel="stylesheet" href="index.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
@@ -25,6 +24,11 @@
           <col>
         </colgroup>
         <tbody>
+          <tr id="iprow" class="left">
+            <td class="col3">Local IP:</td>
+            <td class="col3"><input oninput="updateIP(this.value)" id="ip" type="text"></td>
+            <td class="col3"><button onclick="document.getElementById('iprow').style.display='none'" class="btn btn-small waves-effect waves-light">Hide</button></td>
+          </tr>
           <tr class="left">
             <td colspan="3">RGB Controls</td>
           </tr>
