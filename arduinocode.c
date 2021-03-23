@@ -97,7 +97,7 @@ void setup() {
   // Color change
   server.on("/color", HTTP_POST, color);
 
-  // Actually start the server
+  // Start the server
   server.begin();
   Serial.println("HTTP server started");
 }

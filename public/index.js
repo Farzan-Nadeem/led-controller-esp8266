@@ -67,9 +67,9 @@ function custom_color_picker_input(hex) {
     if (inputChangeBlocker) { return; }
     inputChangeBlocker = true;
     
-    var rgb = hexToRgb(hex) 
+    var rgb = hexToRgb(hex)
     // send to the controller
-    var url = ESP8266 + "/color?red=" + rgb[0] + "&green=" + rgb[1] + "&blue=" + rgb[2]
+    var url = ESP8266 + "/color?red=" + rgb.r + "&green=" + rgb.g + "&blue=" + rgb.b
     sendRequest(url)
 
     // Reset the blocker after some ms, which will open the path for more sends to the controller
@@ -86,7 +86,7 @@ function custom_color_picker_change(hex) {
     var rgb = hexToRgb(hex) 
 
     // Send this to controller
-    var url = ESP8266 + "/color?red=" + rgb[0] + "&green=" + rgb[1] + "&blue=" + rgb[2]
+    var url = ESP8266 + "/color?red=" + rgb.r + "&green=" + rgb.g + "&blue=" + rgb.b
     sendRequest(url)
 }
 
@@ -130,10 +130,10 @@ function clearSavedColors() {
 // This color will be sent as the "R", "G", and "B" parameter
 // The controller will read the parameters and then display it on the LED
 function custom_color(e) { 
-    var rgb = hexToRgb(e.value)
+    var rgb = hexToRgb(e)
    
     // Send this to controller
-    var url = ESP8266 + "/color?red=" + rgb[0] + "&green=" + rgb[1] + "&blue=" + rgb[2]
+    var url = ESP8266 + "/color?red=" + rgb.r + "&green=" + rgb.g + "&blue=" + rgb.b
     sendRequest(url) 
 }
 
