@@ -1,0 +1,53 @@
+.container { 
+    width: 100%;
+}
+
+table { 
+    width: 100%; 
+    table-layout: fixed;
+} 
+
+.left { 
+    text-align: left;
+}
+
+.borderless { 
+    border-collapse: unset !important;
+}
+
+.col3 { 
+    width: 33%
+}
+
+.col2 { 
+    width: 50%;
+}
+
+.pressable {  
+    padding: 1.5em;
+}
+
+.red { 
+    background: red;
+}
+
+.blue { 
+    background: blue;
+}
+
+.green { 
+    background: green;
+}
+
+.light { 
+    background: darkgrey !important;
+}
+
+.dark { 
+    background: grey !important;
+}
+
+.btn, .btn-floating {
+    margin-bottom: 10px;
+    margin-right: 10px;
+}

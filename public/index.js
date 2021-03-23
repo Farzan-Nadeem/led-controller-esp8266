@@ -1,3 +1,32 @@
+// Initialization function
+// This will set all the saved colors if there are any
+var savedColors = ""
+var savedColorsNum = 0
+var savedContainer = null;
+
+window.onload = init()  
+
+function init() { 
+    setTimeout(function() { 
+        var cookies = document.cookie;
+
+        if(cookies.length < 1 ) return 
+
+        savedColors = cookies.split("=")[1]
+
+        savedColorsArray = savedColors.split(",")
+        savedColorsNum = savedColorsArray.length;
+
+        savedContainer = document.getElementById("savedColorsContainer")
+        console.log(savedContainer) 
+
+        savedColorsArray.forEach(color => { 
+            createSavedColorButton(color)
+        })
+        
+    }, 100)
+}
+
 // We're going to be using a single click handler for the RGB up/down buttons
 // However, it'll send a distinct request for which hue is getting updated
 // The arduino code is quite verbose and simplistic, so I figured this would be the best way to minimze coding, on at least one end
@@ -41,24 +70,46 @@ function custom_color_picker(hex) {
     var rgb = hexToRgb(hex)
     console.log(rgb)
 
+    // Send this to controller
 }
 
 
-// This will be the function that saves the value of the custom color that was just made to the Firebase database
-// This can only be used when the credentials to firebase are updated
-// Though this could be updated later to be stored in the cookies
-// Going to be storing as a hex value
+// This will be the function that saves the value of the custom color that was just made to the browser cookies
 function custom_color_save() { 
-    var value = document.getElementById("colorPicker").value
+    var value = document.getElementById("colorPicker").value 
+ 
+    if(savedColors.length < 1) {
+        savedColors = value
+    } else { 
+        savedColors += "," + value
+    } 
 
-    // Send value to firebae for saving
+    var d = new Date();
+    d.setTime(d.getTime() + (10*365*24*60*60*1000));
+    var expires = "expires="+ d.toUTCString(); 
+
+    // Append to the custom color json and then set the cookie again to update it 
+    document.cookie = "savedColors="+savedColors+";"+expires
+
+    // Add the color to the ui
+    savedContainer = document.getElementById("savedColorsContainer")
+    createSavedColorButton(value)
 }
 
 
-// Opposite of above
-function custom_color_delete(e) { 
-    // Will get the id of the delete from the click even
-    // Send a delete command to the firebase database via the id
+// Opposite of above, clears everything
+function clearSavedColors(e) { 
+
+    if (confirm("Are you sure? There is no way to retrieve these items once lost")) { 
+        var d = new Date();
+        d.setTime(d.getTime() - (10*24*60*1000));
+        var expires = "expires="+ d.toUTCString(); 
+    
+        // Append to the custom color json and then set the cookie again to update it 
+        document.cookie = "savedColors="+savedColors+";"+expires
+    
+        savedContainer.innerHTML = ""
+    }
 }
 
 
@@ -66,6 +117,7 @@ function custom_color_delete(e) {
 // This color will be sent as the "R", "G", and "B" parameter
 // The controller will read the parameters and then display it on the LED
 function custom_color(e) { 
+    console.log(e)
     var rgb = hexToRgb(e.value)
 }
 
@@ -82,4 +134,11 @@ function hexToRgb(hex) {
         g: parseInt(result[2], 16),
         b: parseInt(result[3], 16)
     } : null;
+}
+
+
+function createSavedColorButton(color) { 
+    var classes = "btn-floating btn-large waves-effect waves-light pressable"
+    var tag = `<button value="${color}" onclick="custom_color(this.value)" style="background:${color}" class="${classes}"></button>`
+    savedContainer.innerHTML += tag
 }
