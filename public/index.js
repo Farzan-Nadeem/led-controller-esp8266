@@ -10,6 +10,7 @@ function init() {
     setTimeout(function() { 
         var cookies = document.cookie;
 
+        savedContainer = document.getElementById("savedColorsContainer")
         if(cookies.length < 1 ) return 
 
         savedColors = cookies.split("=")[1]
@@ -17,7 +18,6 @@ function init() {
         savedColorsArray = savedColors.split(",")
         savedColorsNum = savedColorsArray.length;
 
-        savedContainer = document.getElementById("savedColorsContainer")
         console.log(savedContainer) 
 
         savedColorsArray.forEach(color => { 
@@ -32,6 +32,7 @@ function init() {
 // The arduino code is quite verbose and simplistic, so I figured this would be the best way to minimze coding, on at least one end
 // e is the event object. It tells us which button was clicked via the ID of the button clicked
 function hue_change(e) { 
+    // Send this to controller
 
 } 
 
@@ -41,6 +42,7 @@ function hue_change(e) {
 // Could they have been combined? Definitely
 // Separated for logic and readability 
 function bright_change(e) { 
+    // Send this to controller
 
 }
 
@@ -50,6 +52,7 @@ function bright_change(e) {
 // Here, we send the mode that we want to start on the controller as a "parameter"
 // The parameter is read and acted on from the controller side
 function mode(e) { 
+    // Send this to controller
 
 }
 
@@ -60,8 +63,7 @@ function mode(e) {
 
 /// =============================================================
 // could change this to the input event, to have realtime updating of the leds
-// to limit the send rate, could enforce a global variable
-// if the variable is false, cant send
+// to limit the send rate, could enforce a global variable 
 // the variable is set to false cant send
 // set a timer to reset the variable to true after x amount of time 
 // Mainly have to see how the controller handles it and how many requests are made 
@@ -91,8 +93,7 @@ function custom_color_save() {
     // Append to the custom color json and then set the cookie again to update it 
     document.cookie = "savedColors="+savedColors+";"+expires
 
-    // Add the color to the ui
-    savedContainer = document.getElementById("savedColorsContainer")
+    // Add the color to the ui 
     createSavedColorButton(value)
 }
 
@@ -119,8 +120,9 @@ function clearSavedColors(e) {
 function custom_color(e) { 
     console.log(e)
     var rgb = hexToRgb(e.value)
-}
+    // Send this to controller
 
+}
 
 
 // The color picker sends back the value as a hex string 

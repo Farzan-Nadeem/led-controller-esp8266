@@ -61,13 +61,13 @@
             <td>
               <input value="#ffffff" id="colorPicker" type="color" onchange="custom_color_picker(this.value)">
             </td>
-            <td><button onclick="custom_color_save()" class="btn waves-effect waves-light pressable">Save</button></td>
+            <td colspan="2"><button onclick="custom_color_save()" class="btn waves-effect waves-light pressable">Save</button></td>
           </tr>
           <tr class="left">
-            <td class="col3">Saved Colors</td> 
+            <td>Saved Colors</td> 
           </tr>
           <tr>
-            <td class="col3"><button onclick="clearSavedColors()" class="btn waves-effect waves-light">Clear Saved Colors</button></td>
+            <td colspan="3"><button onclick="clearSavedColors()" class="btn waves-effect waves-light">Clear Saved Colors</button></td>
           </tr>
           <tr>
             <td id="savedColorsContainer" colspan="3"></td>
