@@ -32,30 +32,25 @@
           <col>
         </colgroup>
         <tbody>
-          <tr id="iprow" class="left">
-            <td class="col3">Local IP:</td>
-            <td class="col3"><input oninput="updateIP(this.value)" id="ip" type="text"></td>
-            <td class="col3"><button onclick="document.getElementById('iprow').style.display='none'" class="btn btn-small waves-effect waves-light">Hide</button></td>
-          </tr>
           <tr class="left">
             <td colspan="3">RGB Controls</td>
           </tr>
           <tr>
-            <td class="col3"><button class="btn-floating btn-large waves-effect waves-light red pressable"><i class="fa fa-arrow-up"></i></button></td>
-            <td class="col3"><button class="btn-floating btn-large waves-effect waves-light green pressable"><i class="fa fa-arrow-up"></i></button></td>
-            <td class="col3"><button class="btn-floating btn-large waves-effect waves-light blue pressable"><i class="fa fa-arrow-up"></i></button></td>
+            <td class="col3"><button value="red_up" onclick="hueChange(this.value)" class="btn-floating btn-large waves-effect waves-light red pressable"><i class="fa fa-arrow-up"></i></button></td>
+            <td class="col3"><button value="green_up" onclick="hueChange(this.value)" class="btn-floating btn-large waves-effect waves-light green pressable"><i class="fa fa-arrow-up"></i></button></td>
+            <td class="col3"><button value="blue_up" onclick="hueChange(this.value)" class="btn-floating btn-large waves-effect waves-light blue pressable"><i class="fa fa-arrow-up"></i></button></td>
           </tr>
           <tr>
-            <td class="col3"><button class="btn-floating btn-large waves-effect waves-light red pressable"><i class="fa fa-arrow-down"></i></button></td>
-            <td class="col3"><button class="btn-floating btn-large waves-effect waves-light green pressable"><i class="fa fa-arrow-down"></i></button></td>
-            <td class="col3"><button class="btn-floating btn-large waves-effect waves-light blue pressable"><i class="fa fa-arrow-down"></i></button></td>
+            <td class="col3"><button value="red_down" onclick="hueChange(this.value)" class="btn-floating btn-large waves-effect waves-light red pressable"><i class="fa fa-arrow-down"></i></button></td>
+            <td class="col3"><button value="green_down" onclick="hueChange(this.value)" class="btn-floating btn-large waves-effect waves-light green pressable"><i class="fa fa-arrow-down"></i></button></td>
+            <td class="col3"><button value="blue_down" onclick="hueChange(this.value)" class="btn-floating btn-large waves-effect waves-light blue pressable"><i class="fa fa-arrow-down"></i></button></td>
           </tr>
           <tr class="left">
             <td colspan="3">Brightness Controls</td>
           </tr>
           <tr>
-            <td class="col2"><button class="btn-floating btn-large waves-effect waves-light dark pressable"><i class="fa fa-sun-o"></i></button></td>
-            <td class="col2"><button class="btn-floating btn-large waves-effect waves-light dark pressable"><i class="fa fa-moon-o"></i></button></td> 
+            <td class="col2"><button value="bright_up" onclick="brightChange(this.value)" class="btn-floating btn-large waves-effect waves-light dark pressable"><i class="fa fa-sun-o"></i></button></td>
+            <td class="col2"><button value="bright_down" onclick="brightChange(this.value)" class="btn-floating btn-large waves-effect waves-light dark pressable"><i class="fa fa-moon-o"></i></button></td> 
             <td></td>
           </tr>
           <tr class="left">
@@ -63,7 +58,7 @@
           </tr>
           <tr>
             <td colspan="3">
-              <button class="btn waves-effect waves-light">Fade</button> 
+              <button value="fade" onclick="mode(this.value)" class="btn waves-effect waves-light">Fade</button> 
             </td>
           </tr>
           <tr class="left">
