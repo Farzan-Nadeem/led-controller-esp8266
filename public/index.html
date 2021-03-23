@@ -42,7 +42,7 @@
             <td colspan="3">Brightness Controls</td>
           </tr>
           <tr>
-            <td class="col2"><button class="btn-floating btn-large waves-effect waves-light light pressable"><i class="fa fa-sun-o"></i></button></td>
+            <td class="col2"><button class="btn-floating btn-large waves-effect waves-light dark pressable"><i class="fa fa-sun-o"></i></button></td>
             <td class="col2"><button class="btn-floating btn-large waves-effect waves-light dark pressable"><i class="fa fa-moon-o"></i></button></td> 
             <td></td>
           </tr>
@@ -59,7 +59,7 @@
           </tr>
           <tr>
             <td>
-              <input value="#ffffff" id="colorPicker" type="color" onchange="custom_color_picker(this.value)">
+              <input value="#ffffff" id="colorPicker" type="color" oninput="custom_color_picker_input(this.value)" onchange="custom_color_picker_change(this.value)">
             </td>
             <td colspan="2"><button onclick="custom_color_save()" class="btn waves-effect waves-light pressable">Save</button></td>
           </tr>

@@ -56,19 +56,30 @@ function mode(e) {
 
 }
 
+
+// Going to have an input handler function that will update the controller
+// This will be intermittent until I figure out the rate that I can send data to the controller
+// This is going to be the blocking boolean
+var inputChangeBlocker = false
+function custom_color_picker_input(hex) { 
+    if(inputChangeBlocker)  { return; }
+    inputChangeBlocker = true;
+    var rgb = hexToRgb(hex)
+    console.log(`Running the input function ${rgb}`)
+    
+    // send to the controller
+
+    // Reset the blocker after some ms, which will open the path for more sends to the controller
+    setTimeout(() => {
+        inputChangeBlocker = false
+    }, 100);
+}
  
 // This is going to be the custom colour picker's way of sending the custom color
 // The request would send the "R" "G" and "B" values as parameters to the controller
 // The parameters are going to be read and then acted on from the controller side
-
-/// =============================================================
-// could change this to the input event, to have realtime updating of the leds
-// to limit the send rate, could enforce a global variable 
-// the variable is set to false cant send
-// set a timer to reset the variable to true after x amount of time 
-// Mainly have to see how the controller handles it and how many requests are made 
-// ==============================================================
-function custom_color_picker(hex) { 
+// This will be the event that fires at the end of the changing
+function custom_color_picker_change(hex) { 
     var rgb = hexToRgb(hex)
     console.log(rgb)
 
