@@ -25,6 +25,17 @@
 
   <body>
     <div class="container">
+      <div id="iprow" class="row p-t-20"> 
+        <div class="col s1">
+          <p>Local IP:</p> 
+        </div>  
+        <div class="col s4">
+          <input oninput="updateIP(this.value)" id="ip" type="text">
+        </div>  
+        <div class="col s4">
+          <button onclick="document.getElementById('iprow').style.display='none'" class="btn btn-small waves-effect waves-light">Hide</button>
+        </div>  
+      </div>
       <table class="centered borderless"> 
         <colgroup>
           <col>
@@ -32,11 +43,6 @@
           <col>
         </colgroup>
         <tbody>
-          <tr id="iprow" class="left">
-            <td class="col3">Local IP:</td>
-            <td class="col3"><input oninput="updateIP(this.value)" id="ip" type="text"></td>
-            <td class="col3"><button onclick="document.getElementById('iprow').style.display='none'" class="btn btn-small waves-effect waves-light">Hide</button></td>
-          </tr>
           <tr class="left">
             <td colspan="3">RGB Controls</td>
           </tr>

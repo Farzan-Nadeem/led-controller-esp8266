@@ -7,6 +7,10 @@ table {
     table-layout: fixed;
 } 
 
+.p-t-20 { 
+    padding-top: 20px;
+}
+
 .left { 
     text-align: left;
 }
