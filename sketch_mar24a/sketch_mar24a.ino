@@ -2,16 +2,16 @@
 #include <WiFiClient.h>
 #include <ESP8266WiFiMulti.h>
 #include <ESP8266mDNS.h>
-#include <ESP8266WebServer.h>
+#include <ESP8266WebServer.h> 
 
 // Create an instance of the ESP8266WiFiMulti class, called 'wifiMulti'
 ESP8266WiFiMulti wifiMulti; 
 // Create a webserver object that listens for HTTP request on port 80
 ESP8266WebServer server(80); 
 
-#define RED_LED 6
-#define GREEN_LED 9
-#define BLUE_LED 5
+#define RED_LED 4
+#define GREEN_LED 0
+#define BLUE_LED 2
 
 int brightness = 255;
 int rBright = 0;
@@ -29,23 +29,21 @@ void green_down();
 void blue_down();
 void bright_up();
 void bright_down();
-void mode();
+void mode_run();
 void color();
 
-void setup() {
-
-  pinMode(RED_LED, OUTPUT);
-  pinMode(GREEN_LED, OUTPUT);
-  pinMode(BLUE_LED, OUTPUT);
-
-  // Start the serial communication to send messages to the computer
-  Serial.begin(115200); 
+void setup(void) {
+  delay(1000);
+  Serial.begin(9600); 
+  
+  
+  // Start the serial communication to send messages to the computer 
+  Serial.println("Starting setup");
   delay(10);
   Serial.println('\n');
-
+  Serial.println("Trying to connect");
   // Add Wi-Fi networks you want to connect to
-  wifiMulti.addAP("BELL377", "cogeco0616866"); 
-  wifiMulti.addAP("BELL377-5", "cogeco0616866");
+  wifiMulti.addAP("BELL377", "cogeco0616866");
 
   Serial.println("Connecting ...");
   int i = 0;
@@ -55,7 +53,7 @@ void setup() {
   }
 
   Serial.println('\n');
-  Serial.print("Connected to ")
+  Serial.print("Connected to ");
   // Tell us what network we're connected to
   Serial.println(WiFi.SSID()); 
   Serial.print("IP address:\t");
@@ -70,38 +68,42 @@ void setup() {
   }
 
   // Call the 'handleRoot' function when a client requests URI "/"
-  server.on("/", HTTP_GET, handleRoot); 
-  // Call the 'handleLogin' function when a POST request is made to URI "/login"
-  server.on("/login", HTTP_POST, hand
+  server.on("/", HTTP_GET, handleRoot);  
   // When a client requests an unknown URI (i.e. something other than "/"), call function "handleNotFound"leLogin); 
   server.onNotFound(handleNotFound); 
 
   // RGB UP functions
-  server.on("/red_up", HTTP_POST, red_up);
-  server.on("/green_up", HTTP_POST, green_up);
-  server.on("/blue_up", HTTP_POST, blue_up);
+  server.on("/red_up", HTTP_GET, red_up);
+  server.on("/green_up", HTTP_GET, green_up);
+  server.on("/blue_up", HTTP_GET, blue_up);
 
   // RGB DOWN functions
-  server.on("/red_down", HTTP_POST, red_down);
-  server.on("/green_down", HTTP_POST, green_down);
-  server.on("/blue_down", HTTP_POST, blue_down);
+  server.on("/red_down", HTTP_GET, red_down);
+  server.on("/green_down", HTTP_GET, green_down);
+  server.on("/blue_down", HTTP_GET, blue_down);
 
   // Brightness control functions
-  server.on("/bright_up", HTTP_POST, bright_up);
-  server.on("/bright_down", HTTP_POST, bright_down);
+  server.on("/bright_up", HTTP_GET, bright_up);
+  server.on("/bright_down", HTTP_GET, bright_down);
 
   // Mode change functions
-  server.on("/mode", HTTP_POST, mode);
+  server.on("/mode", HTTP_GET, mode_run);
 
   // Color change
-  server.on("/color", HTTP_POST, color);
+  server.on("/color", HTTP_GET, color);
 
+  Serial.println("Starting server");
   // Start the server
   server.begin();
+
+  Serial.println("Starting pins");
+  pinMode(RED_LED, OUTPUT);
+  pinMode(GREEN_LED, OUTPUT);
+  pinMode(BLUE_LED, OUTPUT);
   Serial.println("HTTP server started");
 }
 
-void loop(void) {
+void loop() {
   // Listen for HTTP requests from clients
   server.handleClient();
 }
@@ -117,6 +119,7 @@ void red_up() {
     rBright = 255;
   }
 
+  Serial.println("red up");
   analogWrite(RED_LED, rBright);
   server.send(200, "text/plain", "ok");
 }
@@ -126,7 +129,7 @@ void green_up() {
   if (gBright > 255) {
     gBright = 255;
   }
-
+Serial.println("green up");
   analogWrite(GREEN_LED, gBright);
   server.send(200, "text/plain", "ok");
 }
@@ -137,6 +140,7 @@ void blue_up() {
     bBright = 255;
   }
 
+Serial.println("blue up");
   analogWrite(BLUE_LED, bBright);
   server.send(200, "text/plain", "ok");
 }
@@ -146,6 +150,8 @@ void red_down() {
     rBright = 0;
   }
 
+
+Serial.println("red down");
   analogWrite(RED_LED, rBright);
   server.send(200, "text/plain", "ok");
 }
@@ -155,6 +161,7 @@ void green_down() {
     gBright = 0;
   }
 
+Serial.println("green down");
   analogWrite(GREEN_LED, gBright);
   server.send(200, "text/plain", "ok");
 }
@@ -163,7 +170,7 @@ void blue_down() {
   if (bBright < 0) {
     bBright = 0;
   }
-
+Serial.println("blue down");
   analogWrite(BLUE_LED, bBright);
   server.send(200, "text/plain", "ok");
 }
@@ -177,6 +184,7 @@ void bright_up() {
   analogWrite(GREEN_LED, gBright);
   analogWrite(BLUE_LED, bBright);
 
+Serial.println("bright up");
   server.send(200, "text/plain", "ok");
 }
 void bright_down() {
@@ -184,6 +192,7 @@ void bright_down() {
   gBright *= 0.75;
   bBright *= 0.75;
 
+Serial.println("bright down");
   analogWrite(RED_LED, rBright);
   analogWrite(GREEN_LED, gBright);
   analogWrite(BLUE_LED, bBright);
@@ -196,28 +205,29 @@ void bright_down() {
 // If they can then this can be implemented
 // Otherwise, this is a no go
 // There won't be any way break out from the mode function once it starts running
-void mode() {
+void mode_run() {
   if (server.arg("mode") == "fade") {
     Serial.println("Going to start the fadeee");
   }
 
-  server.send(200, "text/plain", "ok")
+  server.send(200, "text/plain", "ok");
 }
 
 void color() {
-  int red = server.arg("red");
-  int green = server.arg("green");
-  int blue = server.arg("blue");
+  int red = server.arg("red").toInt();
+  int green = server.arg("green").toInt();
+  int blue = server.arg("blue").toInt();
 
   rBright = red;
   gBright = green;
   bBright = blue;
 
+Serial.println("color");
   analogWrite(RED_LED, rBright);
   analogWrite(GREEN_LED, gBright);
   analogWrite(BLUE_LED, bBright);
 
-  server.send(200, "text/plain", "ok")
+  server.send(200, "text/plain", "ok");
 }
 
 void handleNotFound() {
