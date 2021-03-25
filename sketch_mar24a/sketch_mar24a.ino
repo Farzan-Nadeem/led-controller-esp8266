@@ -46,6 +46,16 @@ void setup(void) {
   wifiMulti.addAP("BELL377", "cogeco0616866");
 
   Serial.println("Connecting ...");
+  WiFi.disconnect();
+  IPAddress staticIP(192,168,2,251); 
+  IPAddress gateway(192,168,2,1);
+  IPAddress subnet(255,255,255,0);
+
+  const char* deviceName = "LEDESP8266";
+
+  WiFi.hostname(deviceName);
+  WiFi.config(staticIP, subnet, gateway);
+  
   int i = 0;
   while (wifiMulti.run() != WL_CONNECTED) { // Wait for the Wi-Fi to connect: scan for Wi-Fi networks, and connect to the strongest of the networks above
     delay(250);
@@ -119,7 +129,6 @@ void red_up() {
     rBright = 255;
   }
 
-  Serial.println("red up");
   analogWrite(RED_LED, rBright);
   server.send(200, "text/plain", "ok");
 }
@@ -129,7 +138,6 @@ void green_up() {
   if (gBright > 255) {
     gBright = 255;
   }
-Serial.println("green up");
   analogWrite(GREEN_LED, gBright);
   server.send(200, "text/plain", "ok");
 }
@@ -140,7 +148,6 @@ void blue_up() {
     bBright = 255;
   }
 
-Serial.println("blue up");
   analogWrite(BLUE_LED, bBright);
   server.send(200, "text/plain", "ok");
 }
@@ -150,8 +157,6 @@ void red_down() {
     rBright = 0;
   }
 
-
-Serial.println("red down");
   analogWrite(RED_LED, rBright);
   server.send(200, "text/plain", "ok");
 }
@@ -161,7 +166,6 @@ void green_down() {
     gBright = 0;
   }
 
-Serial.println("green down");
   analogWrite(GREEN_LED, gBright);
   server.send(200, "text/plain", "ok");
 }
@@ -170,7 +174,6 @@ void blue_down() {
   if (bBright < 0) {
     bBright = 0;
   }
-Serial.println("blue down");
   analogWrite(BLUE_LED, bBright);
   server.send(200, "text/plain", "ok");
 }
@@ -184,7 +187,6 @@ void bright_up() {
   analogWrite(GREEN_LED, gBright);
   analogWrite(BLUE_LED, bBright);
 
-Serial.println("bright up");
   server.send(200, "text/plain", "ok");
 }
 void bright_down() {
@@ -192,7 +194,6 @@ void bright_down() {
   gBright *= 0.75;
   bBright *= 0.75;
 
-Serial.println("bright down");
   analogWrite(RED_LED, rBright);
   analogWrite(GREEN_LED, gBright);
   analogWrite(BLUE_LED, bBright);
@@ -207,7 +208,8 @@ Serial.println("bright down");
 // There won't be any way break out from the mode function once it starts running
 void mode_run() {
   if (server.arg("mode") == "fade") {
-    Serial.println("Going to start the fadeee");
+    server.send(200, "text/plain", "ok");
+    fade();
   }
 
   server.send(200, "text/plain", "ok");
@@ -220,9 +222,7 @@ void color() {
 
   rBright = red;
   gBright = green;
-  bBright = blue;
-
-Serial.println("color");
+  bBright = blue; 
   analogWrite(RED_LED, rBright);
   analogWrite(GREEN_LED, gBright);
   analogWrite(BLUE_LED, bBright);
