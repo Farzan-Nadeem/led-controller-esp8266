@@ -5,7 +5,8 @@ var savedColorsKey = "savedColors"
 var savedColorsNum = 0
 var savedContainer = null; 
 
-var ESP8266 = "http://esp8266.local/"
+var ip = ""
+var ipKey = "lanIP"
 
 window.onload = init()
 
@@ -15,6 +16,9 @@ async function init() {
         savedContainer = document.getElementById("savedColorsContainer")
         await sleep(50)
     }
+
+    ip = getCookie(ipKey)
+    document.getElementById("ip").value = ip;
 
     savedColors = getCookie(savedColorsKey)
     if (savedColors.length < 1) return
@@ -26,13 +30,24 @@ async function init() {
     })
 }
 
+function updateIP(e) { 
+    ip = e
+
+    var d = new Date();
+    d.setTime(d.getTime() + (10*365*24*60*60*1000));
+    var expires = "expires="+ d.toUTCString(); 
+
+    // Append to the custom color json and then set the cookie again to update it 
+    document.cookie = ipKey+"="+ip+";"+expires
+}
+
 // We're going to be using a single click handler for the RGB up/down buttons
 // However, it'll send a distinct request for which hue is getting updated
 // The arduino code is quite verbose and simplistic, so I figured this would be the best way to minimze coding, on at least one end
 // e is the event object. It tells us which button was clicked via the ID of the button clicked
 function hueChange(e) {
     // Send this to controller 
-    var url = ESP8266 + "/" + e
+    var url = ip + "/" + e
 
     sendRequest(url)
 }
@@ -43,18 +58,18 @@ function hueChange(e) {
 // Separated for logic and readability 
 function brightChange(e) {
     // Send this to controller
-    var url = ESP8266 + "/" + e
+    var url = ip + "/" + e
 
     sendRequest(url)
 }
 
-// This is to tell the ESP8266 to start displaying a different mode
+// This is to tell the ip to start displaying a different mode
 // The actual code for the different modes is stored on the controller
 // Here, we send the mode that we want to start on the controller as a "parameter"
 // The parameter is read and acted on from the controller side
 function mode(e) {
     // Send this to controller
-    var url = ESP8266 + "/mode?mode=" + e
+    var url = ip + "/mode?mode=" + e
 
     sendRequest(url)
 }
@@ -69,7 +84,7 @@ function custom_color_picker_input(hex) {
     
     var rgb = hexToRgb(hex)
     // send to the controller
-    var url = ESP8266 + "/color?red=" + rgb.r + "&green=" + rgb.g + "&blue=" + rgb.b
+    var url = ip + "/color?red=" + rgb.r + "&green=" + rgb.g + "&blue=" + rgb.b
     sendRequest(url)
 
     // Reset the blocker after some ms, which will open the path for more sends to the controller
@@ -86,7 +101,7 @@ function custom_color_picker_change(hex) {
     var rgb = hexToRgb(hex) 
 
     // Send this to controller
-    var url = ESP8266 + "/color?red=" + rgb.r + "&green=" + rgb.g + "&blue=" + rgb.b
+    var url = ip + "/color?red=" + rgb.r + "&green=" + rgb.g + "&blue=" + rgb.b
     sendRequest(url)
 }
 
@@ -133,7 +148,7 @@ function custom_color(e) {
     var rgb = hexToRgb(e)
    
     // Send this to controller
-    var url = ESP8266 + "/color?red=" + rgb.r + "&green=" + rgb.g + "&blue=" + rgb.b
+    var url = ip + "/color?red=" + rgb.r + "&green=" + rgb.g + "&blue=" + rgb.b
     sendRequest(url) 
 }
 
@@ -176,9 +191,10 @@ function getCookie(cname) {
     return "";
 }
 
-function sendRequest(url) { 
+function sendRequest(url) {
+    url = "http://" + url;
     var request = new XMLHttpRequest();  
     request.onload = function () { } 
-    request.open("POST", url, true);
+    request.open("GET", url, true);
     request.send(); 
 }
